@@ -1,12 +1,15 @@
 package skill
 
 import (
+	"context"
 	"crypto/sha256"
 	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 
+	"github.com/vibefile-dev/vibe/config"
+	"github.com/vibefile-dev/vibe/registry"
 	"gopkg.in/yaml.v3"
 )
 
@@ -30,7 +33,7 @@ type frontmatter struct {
 //  2. .vibe/skills/<name>/SKILL.md in the repo root
 //  3. ~/.vibe/skills/<name>/SKILL.md (user-global)
 //  4. Additional paths from extraSources (typically from .vibe/config.yaml)
-func Resolve(repoRoot, skillName string, extraSources []string) (*SkillInfo, error) {
+func Resolve(repoRoot, skillName string, extraSources []string, reg *config.RegistryConfig) (*SkillInfo, error) {
 	candidates := []string{
 		filepath.Join(repoRoot, "skills", skillName, "SKILL.md"),
 		filepath.Join(repoRoot, ".vibe", "skills", skillName, "SKILL.md"),
@@ -67,7 +70,15 @@ func Resolve(repoRoot, skillName string, extraSources []string) (*SkillInfo, err
 			Hash:        fmt.Sprintf("sha256:%x", h),
 		}, nil
 	}
-
+	if entry, err := registry.New(reg).LookupSkill(context.Background(), skillName); err != nil {
+		return nil, fmt.Errorf("skill %q not found locally; registry error: %w", skillName, err)
+	} else if entry != nil {
+		return &SkillInfo{
+			Name:        entry.Name,
+			Description: entry.Description,
+			RawContent:  entry.Description,
+		}, nil
+	}
 	return nil, fmt.Errorf("skill %q not found (searched: %s)", skillName, strings.Join(candidates, ", "))
 }
 

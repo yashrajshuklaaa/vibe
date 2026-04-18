@@ -78,7 +78,7 @@ func showStatus(cmd *cobra.Command, args []string) error {
 		skillRawContent := ""
 		if target.HasDirective("skill") {
 			skillName := target.DirectiveArgs("skill")
-			info, err := skill.Resolve(repoRoot, skillName, projCfg.SkillSources)
+			info, err := skill.Resolve(repoRoot, skillName, projCfg.SkillSources, projCfg.Registry)
 			if err == nil {
 				skillRawContent = info.RawContent
 			}

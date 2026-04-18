@@ -73,7 +73,7 @@ func Collect(repoRoot string, target *parser.Target) (*Collected, error) {
 			c.ProjectFiles[f] = string(data)
 		}
 	}
-// Include already-compiled scripts so LLM stays style-consistent
+	// Include already-compiled scripts so LLM stays style-consistent
 	compiledDir := filepath.Join(repoRoot, ".vibe", "compiled")
 	if entries, err := os.ReadDir(compiledDir); err == nil {
 		for _, entry := range entries {
@@ -120,7 +120,7 @@ func inferTaskFiles(target *parser.Target) []string {
 		files = append(files, "schema.sql", "schema.prisma", "prisma/schema.prisma")
 	}
 
-        // Include common shell scripts based on target name/recipe
+	// Include common shell scripts based on target name/recipe
 	commonShellScripts := []string{
 		"build.sh", "deploy.sh", "test.sh", "run.sh",
 		"setup.sh", "install.sh", "release.sh", "lint.sh", "ci.sh",

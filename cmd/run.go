@@ -95,7 +95,7 @@ func runTarget(cmd *cobra.Command, args []string) error {
 		var skillInfo *skill.SkillInfo
 		if target.HasDirective("skill") {
 			skillName := target.DirectiveArgs("skill")
-			info, err := skill.Resolve(repoRoot, skillName, projCfg.SkillSources)
+			info, err := skill.Resolve(repoRoot, skillName, projCfg.SkillSources, projCfg.Registry)
 			if err != nil {
 				ui.Fail(fmt.Sprintf("skill %q: %v", skillName, err))
 				return fmt.Errorf("target %q: skill resolution: %w", name, err)

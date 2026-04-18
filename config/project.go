@@ -12,8 +12,8 @@ import (
 // committed to version control. It never contains secrets.
 type ProjectConfig struct {
 	Servers      map[string]ServerConfig `yaml:"servers,omitempty"`
-	SkillSources []string               `yaml:"skill_sources,omitempty"`
-	Registry     *RegistryConfig        `yaml:"registry,omitempty"`
+	SkillSources []string                `yaml:"skill_sources,omitempty"`
+	Registry     *RegistryConfig         `yaml:"registry,omitempty"`
 }
 
 // ServerConfig defines how to reach an MCP server.
@@ -25,7 +25,8 @@ type ServerConfig struct {
 
 // RegistryConfig defines a registry for dynamic server/skill resolution.
 type RegistryConfig struct {
-	URL string `yaml:"url"`
+	URL     string `yaml:"url"`
+	Timeout int    `yaml:"timeout,omitempty"`
 }
 
 // LoadProjectConfig reads .vibe/config.yaml from the given repo root.

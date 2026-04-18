@@ -13,7 +13,7 @@ func TestResolveFromRepoSkillsDir(t *testing.T) {
 	os.MkdirAll(skillDir, 0o755)
 	os.WriteFile(filepath.Join(skillDir, "SKILL.md"), []byte("Run go test with race detection"), 0o644)
 
-	info, err := Resolve(dir, "go-test", nil)
+	info, err := Resolve(dir, "go-test", nil, nil)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -34,7 +34,7 @@ func TestResolveFromVibeSkillsDir(t *testing.T) {
 	os.MkdirAll(skillDir, 0o755)
 	os.WriteFile(filepath.Join(skillDir, "SKILL.md"), []byte("Deploy to Fly.io"), 0o644)
 
-	info, err := Resolve(dir, "deploy-fly", nil)
+	info, err := Resolve(dir, "deploy-fly", nil, nil)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -50,7 +50,7 @@ func TestResolveFromExtraSources(t *testing.T) {
 	os.MkdirAll(skillDir, 0o755)
 	os.WriteFile(filepath.Join(skillDir, "SKILL.md"), []byte("Custom skill instructions"), 0o644)
 
-	info, err := Resolve(dir, "my-skill", []string{extraDir})
+	info, err := Resolve(dir, "my-skill", []string{extraDir}, nil)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -61,7 +61,7 @@ func TestResolveFromExtraSources(t *testing.T) {
 
 func TestResolveNotFound(t *testing.T) {
 	dir := t.TempDir()
-	_, err := Resolve(dir, "nonexistent-skill", nil)
+	_, err := Resolve(dir, "nonexistent-skill", nil, nil)
 	if err == nil {
 		t.Fatal("expected error for nonexistent skill")
 	}
@@ -81,7 +81,7 @@ func TestResolvePriority(t *testing.T) {
 	os.MkdirAll(vibeSkill, 0o755)
 	os.WriteFile(filepath.Join(vibeSkill, "SKILL.md"), []byte("vibe version"), 0o644)
 
-	info, err := Resolve(dir, "test-skill", nil)
+	info, err := Resolve(dir, "test-skill", nil, nil)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -98,7 +98,7 @@ func TestResolveWithFrontmatter(t *testing.T) {
 	content := "---\ndescription: Run Go tests with race detection\n---\n\n# Go Test\n\nRun `go test -race ./...`"
 	os.WriteFile(filepath.Join(skillDir, "SKILL.md"), []byte(content), 0o644)
 
-	info, err := Resolve(dir, "go-test", nil)
+	info, err := Resolve(dir, "go-test", nil, nil)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -119,7 +119,7 @@ func TestResolveWithoutFrontmatter(t *testing.T) {
 	os.MkdirAll(skillDir, 0o755)
 	os.WriteFile(filepath.Join(skillDir, "SKILL.md"), []byte("Just instructions"), 0o644)
 
-	info, err := Resolve(dir, "simple", nil)
+	info, err := Resolve(dir, "simple", nil, nil)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -133,8 +133,8 @@ func TestResolveWithoutFrontmatter(t *testing.T) {
 
 func TestParseFrontmatter(t *testing.T) {
 	tests := []struct {
-		name    string
-		input   string
+		name     string
+		input    string
 		wantDesc string
 		wantBody string
 	}{
